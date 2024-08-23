@@ -11,7 +11,8 @@ const gmailToNotion = () => {
     const [message] = thread.getMessages().reverse();
     postToNotion(message);
     thread.removeLabel(label);
-    thread.addLabel(successLabel)
+    thread.addLabel(successLabel);
+    thread.moveToArchive();
   });
 };
 
