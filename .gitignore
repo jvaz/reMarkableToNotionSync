@@ -1,0 +1,17 @@
+# Ignore config file with sensitive information
+config.json
+
+# Ignore Google Apps Script specific files
+.clasp.json
+
+# Ignore node modules if you're using npm
+node_modules/
+
+# Ignore macOS system files
+.DS_Store
+
+# Ignore any log files
+*.log
+
+# Ignore temporary files
+*.tmp

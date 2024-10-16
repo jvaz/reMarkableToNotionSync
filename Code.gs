@@ -1,12 +1,7 @@
-const GMAIL_LABEL_NAME = 'NotionToSync';
-const SYNCED_LABEL = 'SyncedToNotion';
-const DRIVE_FOLDER_ID = '<Replace with your Google Drive folder ID>';
-const DATABASE_ID = '<Replace with your Notion database ID>';
-const NOTION_INTEGRATION = 'Bearer <Replace with your Notion integration token>';
 
 const gmailToNotion = () => {
-  const label = GmailApp.getUserLabelByName(GMAIL_LABEL_NAME);
-  const successLabel = GmailApp.getUserLabelByName(SYNCED_LABEL);
+  const label = GmailApp.getUserLabelByName(PropertiesService.getScriptProperties().getProperty('GMAIL_LABEL_NAME'));
+  const successLabel = GmailApp.getUserLabelByName(PropertiesService.getScriptProperties().getProperty('SYNCED_LABEL'));
   label.getThreads(0, 20).forEach((thread) => {
     const [message] = thread.getMessages().reverse();
     postToNotion(message);
@@ -23,7 +18,7 @@ function postToNotion(message) {
   const attachments = message.getAttachments();
   const fileUrls = attachments.map(attachment => {
     // Upload the file to Google Drive
-    const driveFile = DriveApp.getFolderById(DRIVE_FOLDER_ID).createFile(attachment);
+    const driveFile = DriveApp.getFolderById(PropertiesService.getScriptProperties().getProperty('DRIVE_FOLDER_ID')).createFile(attachment);
     
     // Generate a shareable link
     driveFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
@@ -42,7 +37,7 @@ function postToNotion(message) {
   const body = {
     parent: {
       type: "database_id",
-      database_id: DATABASE_ID,
+      database_id: PropertiesService.getScriptProperties().getProperty('DATABASE_ID'),
     },
     icon: {
       type: "emoji",
@@ -85,7 +80,7 @@ function postToNotion(message) {
     contentType: "application/json",
     muteHttpExceptions: false,
     headers: {
-      Authorization: NOTION_INTEGRATION,
+      Authorization: `Bearer ${PropertiesService.getScriptProperties().getProperty('NOTION_INTEGRATION')}`,
       'Notion-Version': '2022-02-22'
     },
     payload: JSON.stringify(body)
